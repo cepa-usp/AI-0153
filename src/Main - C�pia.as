@@ -86,20 +86,22 @@
 			trocar2.addEventListener(MouseEvent.CLICK, resetCultura);
 			
 			menu.resetBtn.addEventListener(MouseEvent.CLICK, reset);
-			//feedbackCerto.botaoOK.addEventListener(MouseEvent.CLICK, function () { feedbackCerto.visible = false; } );
-			//feedbackErrado.botaoOK.addEventListener(MouseEvent.CLICK, function () { feedbackErrado.visible = false; } );
+			/*feedbackCerto.botaoOK.addEventListener(MouseEvent.CLICK, function () { feedbackCerto.visible = false; } );
+			feedbackErrado.botaoOK.addEventListener(MouseEvent.CLICK, function () { feedbackErrado.visible = false; } );
 			menu.instructionsBtn.addEventListener(MouseEvent.CLICK, function () { infoScreen.visible = true; setChildIndex(infoScreen, numChildren - 1); } );
 			infoScreen.addEventListener(MouseEvent.CLICK, function () { infoScreen.visible = false; } );
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, function (e:KeyboardEvent) { if (KeyboardEvent(e).keyCode == Keyboard.ESCAPE) infoScreen.visible = false; aboutScreen.visible = false;} );
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, function (e:KeyboardEvent) { if (KeyboardEvent(e).keyCode == Keyboard.ESCAPE) infoScreen.visible = false;} );
 			menu.creditosBtn.addEventListener(MouseEvent.CLICK, function () { aboutScreen.visible = true; setChildIndex(aboutScreen, numChildren - 1); } );
 			aboutScreen.addEventListener(MouseEvent.CLICK, function () { aboutScreen.visible = false; } );
-			
+			*/
 			//makeoverOut(feedbackCerto.botaoOK);
 			//makeoverOut(feedbackErrado.botaoOK);
 			makeoverOut(menu.tutorialBtn);
 			makeoverOut(menu.instructionsBtn);
 			makeoverOut(menu.creditosBtn);
 			makeoverOut(menu.resetBtn);
+			
+			//stage.addEventListener(KeyboardEvent.KEY_DOWN, function (e:KeyboardEvent) { if (KeyboardEvent(e).keyCode == Keyboard.ESCAPE) aboutScreen.visible = false;} );
 			
 			menu.tutorialBtn.buttonMode = true;
 			menu.instructionsBtn.buttonMode = true;
@@ -138,8 +140,8 @@
 			slider2B.snapInterval = 0.01;
 			
 			// Dictionaries
-			planta[botaoPlay1] = [raizUm, cauleUm];
-			planta[botaoPlay2] = [raizDois, cauleDois];
+			planta[botaoPlay1] = ["raizUm", "cauleUm"];
+			planta[botaoPlay2] = ["raizDois", "cauleDois"];
 			hormonioA[botaoPlay1] = semente1A;
 			hormonioB[botaoPlay1] = semente1B;
 			hormonioA[botaoPlay2] = semente2A;
@@ -176,8 +178,8 @@
 			//feedbackCerto.botaoOK.buttonMode = true;
 			//feedbackErrado.botaoOK.buttonMode = true;
 			
-			infoScreen.visible = false;
-			aboutScreen.visible = false;
+			//infoScreen.visible = false;
+			//aboutScreen.visible = false;
 			
 			semente1A = Math.random();
 			semente1B = Math.random();
@@ -193,9 +195,13 @@
 			planta[botaoPlay[e.target]][1].gotoAndStop(1);
 			removeChild(planta[botaoPlay[e.target]][0]);
 			removeChild(planta[botaoPlay[e.target]][1]);
-			//semente[planta[botaoPlay[e.target]][1]].visible = true;
+			trace(this[planta[botaoPlay[e.target]][1].name].name);
+			//semente[this[planta[botaoPlay[e.target]][1]]].visible = true;
+			trace("2");
 			vidro[e.target].enabled = true;
+			trace("3");
 			botaoPlay[e.target].mouseEnabled = false;
+			trace("4");
 			botaoPlay[e.target].alpha = 0.4;
 /*			slider[e.target][0].value = 0;
 			slider[e.target][1].value = 0;
@@ -225,10 +231,10 @@
 			raiz2.gotoAndStop(1);
 			caule1.gotoAndStop(1);
 			caule2.gotoAndStop(1);
-			if (stage.contains(raizUm)) removeChild(raizUm);
-			if (stage.contains(cauleUm)) removeChild(cauleUm);
-			if (stage.contains(raizDois)) removeChild(raizDois);
-			if (stage.contains(cauleDois)) removeChild(cauleDois);
+			if (stage.contains(raiz1)) removeChild(raiz1);
+			if (stage.contains(caule1)) removeChild(caule1);
+			if (stage.contains(raiz2)) removeChild(raiz2);
+			if (stage.contains(caule2)) removeChild(caule2);
 			semente1.visible = true;
 			semente2.visible = true;
 			cultura1.enabled = true;
@@ -339,6 +345,9 @@
 			if (alvo.name == "cultura1") {
 				cauleUm = new (getDefinitionByName(getQualifiedClassName(cultura[dragging][0])));
 				raizUm = new (getDefinitionByName(getQualifiedClassName(cultura[dragging][1])));
+				cauleUm.name = "cauleUm";
+				raizUm.name = "raizUm";
+				planta[botaoPlay1] = [raizUm, cauleUm];
 				addChild(cauleUm);
 				addChild(raizUm);
 				cauleUm.x = raizUm.x = alvo.x;
@@ -352,6 +361,7 @@
 			if (alvo.name == "cultura2") {
 				cauleDois = new (getDefinitionByName(getQualifiedClassName(cultura[dragging][0])));
 				raizDois = new (getDefinitionByName(getQualifiedClassName(cultura[dragging][1])));
+				planta[botaoPlay2] = [raizDois, cauleDois];
 				addChild(cauleDois);
 				addChild(raizDois);
 				cauleDois.x = raizDois.x = alvo.x;
