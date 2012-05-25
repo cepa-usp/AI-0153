@@ -47,7 +47,7 @@
 		private var vidro:Dictionary = new Dictionary();
 		private var semente:Dictionary = new Dictionary();
 		private var startPoint:Dictionary = new Dictionary();
-		private var botaoPlay:Dictionary = new Dictionary();
+		private var botao:Dictionary = new Dictionary();
 		private var slider:Dictionary = new Dictionary();
 		private var fa1:int;
 		private var fb1:int;
@@ -74,8 +74,8 @@
 			removeChild(raiz1);
 			removeChild(raiz2);
 			
-			botaoPlay1.addEventListener(MouseEvent.MOUSE_DOWN, playAnimation);
-			botaoPlay2.addEventListener(MouseEvent.MOUSE_DOWN, playAnimation);
+			//botaoPlay1.addEventListener(MouseEvent.MOUSE_DOWN, playAnimation);
+			//botaoPlay2.addEventListener(MouseEvent.MOUSE_DOWN, playAnimation);
 			semente1.addEventListener(MouseEvent.MOUSE_DOWN, drag);
 			semente2.addEventListener(MouseEvent.MOUSE_DOWN, drag);
 			slider1A.addEventListener(Event.CHANGE, changeSlider);
@@ -105,12 +105,12 @@
 			menu.instructionsBtn.buttonMode = true;
 			menu.resetBtn.buttonMode = true;
 			menu.creditosBtn.buttonMode = true;
-			botaoPlay1.buttonMode = true;
-			botaoPlay2.buttonMode = true;
-			botaoPlay1.mouseEnabled = false;
-			botaoPlay2.mouseEnabled = false;
-			botaoPlay1.alpha = 0.4;
-			botaoPlay2.alpha = 0.4;
+			//botaoPlay1.buttonMode = true;
+			//botaoPlay2.buttonMode = true;
+			//botaoPlay1.mouseEnabled = false;
+			//botaoPlay2.mouseEnabled = false;
+			//botaoPlay1.alpha = 0.4;
+			//botaoPlay2.alpha = 0.4;
 			trocar1.buttonMode = true;
 			trocar2.buttonMode = true;
 			trocar1.mouseEnabled = false;
@@ -138,12 +138,12 @@
 			slider2B.snapInterval = 0.01;
 			
 			// Dictionaries
-			planta[botaoPlay1] = [raizUm, cauleUm];
-			planta[botaoPlay2] = [raizDois, cauleDois];
-			hormonioA[botaoPlay1] = semente1A;
-			hormonioB[botaoPlay1] = semente1B;
-			hormonioA[botaoPlay2] = semente2A;
-			hormonioB[botaoPlay2] = semente2B;
+			planta[cultura1] = [raizUm, cauleUm];
+			planta[cultura2] = [raizDois, cauleDois];
+			hormonioA[cultura1] = semente1A;
+			hormonioB[cultura1] = semente1B;
+			hormonioA[cultura2] = semente2A;
+			hormonioB[cultura2] = semente2B;
 			textField[slider1A] = textField1A;
 			textField[slider1B] = textField1B;
 			textField[slider2A] = textField2A;
@@ -156,8 +156,8 @@
 			semente[caule2] = semente2;
 			startPoint[semente1] = new Point(semente1.x, semente1.y);
 			startPoint[semente2] = new Point(semente2.x, semente2.y);
-			botaoPlay[trocar1] = botaoPlay1;
-			botaoPlay[trocar2] = botaoPlay2;
+			botao[trocar1] = cultura1;
+			botao[trocar2] = cultura2;
 			slider[trocar1] = [slider1A, slider1B];
 			slider[trocar2] = [slider2A, slider2B];
 			
@@ -168,7 +168,7 @@
 			
 			var ttinfo:ToolTip = new ToolTip(menu.instructionsBtn, "Orientações", 11, 0.8, 200, 0.6, 0.1);
 			addChild(ttinfo);
-			var ttreset:ToolTip = new ToolTip(menu.resetBtn, "Nova tentativa", 11, 0.8, 200, 0.6, 0.1);
+			var ttreset:ToolTip = new ToolTip(menu.resetBtn, "Reiniciar", 11, 0.8, 200, 0.6, 0.1);
 			addChild(ttreset);
 			var ttcc:ToolTip = new ToolTip(menu.creditosBtn, "Créditos", 11, 0.8, 200, 0.6, 0.1);
 			addChild(ttcc);
@@ -189,14 +189,14 @@
 		{
 			e.target.mouseEnabled = false;
 			e.target.alpha = 0.4;
-			planta[botaoPlay[e.target]][0].gotoAndStop(1);
-			planta[botaoPlay[e.target]][1].gotoAndStop(1);
-			removeChild(planta[botaoPlay[e.target]][0]);
-			removeChild(planta[botaoPlay[e.target]][1]);
+			planta[botao[e.target]][0].gotoAndStop(1);
+			planta[botao[e.target]][1].gotoAndStop(1);
+			removeChild(planta[botao[e.target]][0]);
+			removeChild(planta[botao[e.target]][1]);
 			//semente[planta[botaoPlay[e.target]][1]].visible = true;
 			vidro[e.target].enabled = true;
-			botaoPlay[e.target].mouseEnabled = false;
-			botaoPlay[e.target].alpha = 0.4;
+			botao[e.target].mouseEnabled = false;
+			botao[e.target].alpha = 0.4;
 /*			slider[e.target][0].value = 0;
 			slider[e.target][1].value = 0;
 			textField[slider[e.target][0]].text = "0";
@@ -233,10 +233,10 @@
 			semente2.visible = true;
 			cultura1.enabled = true;
 			cultura2.enabled = true;
-			botaoPlay1.mouseEnabled = false;
-			botaoPlay2.mouseEnabled = false;
-			botaoPlay1.alpha = 0.4;
-			botaoPlay2.alpha = 0.4;
+			//botaoPlay1.mouseEnabled = false;
+			//botaoPlay2.mouseEnabled = false;
+			//botaoPlay1.alpha = 0.4;
+			//botaoPlay2.alpha = 0.4;
 			slider1A.value = 0;
 			slider1B.value = 0;
 			slider2A.value = 0;
@@ -254,18 +254,18 @@
 			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		
-		private function playAnimation(e:MouseEvent):void 
+		private function playAnimation(cult:MovieClip):void 
 		{
 			fa1 = fa(slider1A.value, slider1B.value, semente1A, raizUm.totalFrames);
 			fb1 = fb(slider1A.value, slider1B.value, semente1B, cauleUm.totalFrames);
 			fa2 = fa(slider2A.value, slider2B.value, semente2A, raizUm.totalFrames);
 			fb2 = fb(slider2A.value, slider2B.value, semente2B, cauleUm.totalFrames);
 			
-			planta[e.target][0].play();
-			planta[e.target][1].play();
+			planta[cult][0].gotoAndPlay(2);
+			planta[cult][1].gotoAndPlay(2);
 			
-			e.target.alpha = 0.4;
-			e.target.mouseEnabled = false;
+			//e.target.alpha = 0.4;
+			//e.target.mouseEnabled = false;
 			
 			cauleUm.enabled = true;
 			raizUm.enabled = true;
@@ -343,10 +343,12 @@
 				addChild(raizUm);
 				cauleUm.x = raizUm.x = alvo.x;
 				cauleUm.y = raizUm.y = alvo.y;
-				botaoPlay1.mouseEnabled = true;
-				botaoPlay1.alpha = 1;
+				//botaoPlay1.mouseEnabled = true;
+				//botaoPlay1.alpha = 1;
 				trocar1.mouseEnabled = true;
 				trocar1.alpha = 1;
+				planta[cultura1] = [raizUm, cauleUm];
+				playAnimation(alvo);
 			}
 			
 			if (alvo.name == "cultura2") {
@@ -356,14 +358,16 @@
 				addChild(raizDois);
 				cauleDois.x = raizDois.x = alvo.x;
 				cauleDois.y = raizDois.y = alvo.y;
-				botaoPlay2.mouseEnabled = true;
-				botaoPlay2.alpha = 1;
+				//botaoPlay2.mouseEnabled = true;
+				//botaoPlay2.alpha = 1;
 				trocar2.mouseEnabled = true;
 				trocar2.alpha = 1;
+				planta[cultura2] = [raizDois, cauleDois];
+				playAnimation(alvo);
 			}
 			
-			planta[botaoPlay1] = [raizUm, cauleUm];
-			planta[botaoPlay2] = [raizDois, cauleDois];
+			//planta[botaoPlay1] = [raizUm, cauleUm];
+			//planta[botaoPlay2] = [raizDois, cauleDois];
 			
 			if (alvo is Cultura1 || alvo is Cultura2) {
 				dragging.x = startPoint[dragging].x;
