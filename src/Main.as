@@ -4,6 +4,7 @@
 	import cepa.utils.ToolTip;
 	import fl.transitions.easing.None;
 	import fl.transitions.Tween;
+	import fl.transitions.TweenEvent;
 	import flash.display.DisplayObject;
 	import flash.filters.GlowFilter;
 	import flash.display.MovieClip;
@@ -34,6 +35,7 @@
 		private var alvo:MovieClip;
 		private var tweenX:Tween;
 		private var tweenY:Tween;
+		private var tweenCultura:Tween;
 		private const GLOW_FILTER:GlowFilter = new GlowFilter(0xFF0000, 1, 5, 5, 2, 2);
 		private var semente1A:Number;
 		private var semente1B:Number;
@@ -57,6 +59,12 @@
 		private var raizDois:MovieClip = new MovieClip();
 		private var cauleUm:MovieClip = new MovieClip();
 		private var cauleDois:MovieClip = new MovieClip();
+		private var xTarget:Number;
+		private var lastX:Number;
+		private var qualCultura:Object;
+		private var qualPlanta:Array = new Array();
+		private var tweenPlanta1:Tween;
+		private var tweenPlanta2:Tween;
 		
 		public function Main() 
 		{
@@ -189,14 +197,22 @@
 		{
 			e.target.mouseEnabled = false;
 			e.target.alpha = 0.4;
-			planta[botao[e.target]][0].gotoAndStop(1);
-			planta[botao[e.target]][1].gotoAndStop(1);
-			removeChild(planta[botao[e.target]][0]);
-			removeChild(planta[botao[e.target]][1]);
+			//planta[botao[e.target]][0].gotoAndStop(1);
+			//planta[botao[e.target]][1].gotoAndStop(1);
+			qualPlanta[0] = planta[botao[e.target]][0];
+			qualPlanta[1] = planta[botao[e.target]][1];
 			//semente[planta[botaoPlay[e.target]][1]].visible = true;
 			vidro[e.target].enabled = true;
-			botao[e.target].mouseEnabled = false;
-			botao[e.target].alpha = 0.4;
+			lastX = vidro[e.target].x;
+			qualCultura = vidro[e.target];
+			if (vidro[e.target].name == "cultura1") xTarget = -200;
+			else if (vidro[e.target].name == "cultura2") xTarget = 900;
+			tweenCultura = new Tween(vidro[e.target], "x", None.easeNone, vidro[e.target].x, xTarget, 0.4, true);
+			tweenPlanta1 = new Tween(qualPlanta[0], "x", None.easeNone, qualPlanta[0].x, xTarget, 0.4, true);
+			tweenPlanta2 = new Tween(qualPlanta[1], "x", None.easeNone, qualPlanta[1].x, xTarget, 0.4, true);
+			tweenCultura.addEventListener(TweenEvent.MOTION_FINISH, initTweenCultura);
+			//botao[e.target].mouseEnabled = false;
+			//botao[e.target].alpha = 0.4;
 /*			slider[e.target][0].value = 0;
 			slider[e.target][1].value = 0;
 			textField[slider[e.target][0]].text = "0";
@@ -210,6 +226,29 @@
 			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		
+		private function initTweenCultura(e:TweenEvent):void 
+		{
+			tweenCultura.removeEventListener(TweenEvent.MOTION_FINISH, initTweenCultura);
+			tweenCultura = new Tween(qualCultura, "x", None.easeNone, xTarget, lastX, 0.4, true);
+			removeChild(qualPlanta[0]);
+			removeChild(qualPlanta[1]);
+		}
+		
+		private function initTweenCulturaReset(e:TweenEvent):void 
+		{
+			tweenCultura.removeEventListener(TweenEvent.MOTION_FINISH, initTweenCulturaReset);
+			tweenCultura = new Tween(cultura1, "x", None.easeNone, -200, 171, 0.4, true);
+			tweenCultura = new Tween(cultura2, "x", None.easeNone, 900, 529, 0.4, true);
+			raiz1.gotoAndStop(1);
+			raiz2.gotoAndStop(1);
+			caule1.gotoAndStop(1);
+			caule2.gotoAndStop(1);
+			if (stage.contains(raizUm)) removeChild(raizUm);
+			if (stage.contains(cauleUm)) removeChild(cauleUm);
+			if (stage.contains(raizDois)) removeChild(raizDois);
+			if (stage.contains(cauleDois)) removeChild(cauleDois);
+		}
+		
 		private function changeSlider(e:Event):void 
 		{
 			textField[e.target].text = String(e.target.value).replace(".", ",");
@@ -221,14 +260,6 @@
 			trocar2.mouseEnabled = false;
 			trocar1.alpha = 0.4;
 			trocar2.alpha = 0.4;
-			raiz1.gotoAndStop(1);
-			raiz2.gotoAndStop(1);
-			caule1.gotoAndStop(1);
-			caule2.gotoAndStop(1);
-			if (stage.contains(raizUm)) removeChild(raizUm);
-			if (stage.contains(cauleUm)) removeChild(cauleUm);
-			if (stage.contains(raizDois)) removeChild(raizDois);
-			if (stage.contains(cauleDois)) removeChild(cauleDois);
 			semente1.visible = true;
 			semente2.visible = true;
 			cultura1.enabled = true;
@@ -250,6 +281,14 @@
 			semente1B = Math.random();
 			semente2A = Math.random();
 			semente2B = Math.random();
+			
+			tweenCultura = new Tween(cultura1, "x", None.easeNone, cultura1.x, -200, 0.4, true);
+			tweenCultura = new Tween(cultura2, "x", None.easeNone, cultura2.x, 900, 0.4, true);
+			tweenPlanta1 = new Tween(raizUm, "x", None.easeNone, raizUm.x, -200, 0.4, true);
+			tweenPlanta2 = new Tween(cauleUm, "x", None.easeNone, cauleUm.x, -200, 0.4, true);
+			tweenPlanta1 = new Tween(raizDois, "x", None.easeNone, raizDois.x, 900, 0.4, true);
+			tweenPlanta2 = new Tween(cauleDois, "x", None.easeNone, cauleDois.x, 900, 0.4, true);
+			tweenCultura.addEventListener(TweenEvent.MOTION_FINISH, initTweenCulturaReset);
 			
 			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
