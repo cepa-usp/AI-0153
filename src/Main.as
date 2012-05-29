@@ -348,6 +348,10 @@
 		
 		private function f(x:Number, x0:Number, n:int):int
 		{
+			//if (x <= 0.2) movieclip = explanteMorrendo;
+			//else if (x >= 0.8) movieclip = explanteBolinha;
+			//else movieclip = planta;
+			
 			if (x >= 0 && x0 >= x) return Math.round(n * (x / x0));
 			else if (x > x0 && x <= 1) return Math.round(n * ((1 - x) / (1 - x0)));
 			
