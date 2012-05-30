@@ -51,6 +51,8 @@
 		private var startPoint:Dictionary = new Dictionary();
 		private var botao:Dictionary = new Dictionary();
 		private var slider:Dictionary = new Dictionary();
+		private var explante1:Dictionary = new Dictionary();
+		private var explante2:Dictionary = new Dictionary();
 		private var fa1:int;
 		private var fb1:int;
 		private var fa2:int;
@@ -65,6 +67,10 @@
 		private var qualPlanta:Array = new Array();
 		private var tweenPlanta1:Tween;
 		private var tweenPlanta2:Tween;
+		private var explanteUm:MovieClip = new MovieClip();
+		private var explanteDois:MovieClip = new MovieClip();
+		private var tweenExplante:Tween;
+		private var qualExplante:MovieClip;
 		
 		public function Main() 
 		{
@@ -81,9 +87,11 @@
 			removeChild(caule2);
 			removeChild(raiz1);
 			removeChild(raiz2);
+			removeChild(explante1Morrendo);
+			removeChild(explante2Morrendo);
+			removeChild(explante1Bolinha);
+			removeChild(explante2Bolinha);
 			
-			//botaoPlay1.addEventListener(MouseEvent.MOUSE_DOWN, playAnimation);
-			//botaoPlay2.addEventListener(MouseEvent.MOUSE_DOWN, playAnimation);
 			semente1.addEventListener(MouseEvent.MOUSE_DOWN, drag);
 			semente2.addEventListener(MouseEvent.MOUSE_DOWN, drag);
 			slider1A.addEventListener(Event.CHANGE, changeSlider);
@@ -94,16 +102,13 @@
 			trocar2.addEventListener(MouseEvent.CLICK, resetCultura);
 			
 			menu.resetBtn.addEventListener(MouseEvent.CLICK, reset);
-			//feedbackCerto.botaoOK.addEventListener(MouseEvent.CLICK, function () { feedbackCerto.visible = false; } );
-			//feedbackErrado.botaoOK.addEventListener(MouseEvent.CLICK, function () { feedbackErrado.visible = false; } );
+			menu.tutorialBtn.addEventListener(MouseEvent.CLICK, iniciaTutorial);
 			menu.instructionsBtn.addEventListener(MouseEvent.CLICK, function () { infoScreen.visible = true; setChildIndex(infoScreen, numChildren - 1); } );
 			infoScreen.addEventListener(MouseEvent.CLICK, function () { infoScreen.visible = false; } );
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, function (e:KeyboardEvent) { if (KeyboardEvent(e).keyCode == Keyboard.ESCAPE) infoScreen.visible = false; aboutScreen.visible = false;} );
 			menu.creditosBtn.addEventListener(MouseEvent.CLICK, function () { aboutScreen.visible = true; setChildIndex(aboutScreen, numChildren - 1); } );
 			aboutScreen.addEventListener(MouseEvent.CLICK, function () { aboutScreen.visible = false; } );
 			
-			//makeoverOut(feedbackCerto.botaoOK);
-			//makeoverOut(feedbackErrado.botaoOK);
 			makeoverOut(menu.tutorialBtn);
 			makeoverOut(menu.instructionsBtn);
 			makeoverOut(menu.creditosBtn);
@@ -113,12 +118,6 @@
 			menu.instructionsBtn.buttonMode = true;
 			menu.resetBtn.buttonMode = true;
 			menu.creditosBtn.buttonMode = true;
-			//botaoPlay1.buttonMode = true;
-			//botaoPlay2.buttonMode = true;
-			//botaoPlay1.mouseEnabled = false;
-			//botaoPlay2.mouseEnabled = false;
-			//botaoPlay1.alpha = 0.4;
-			//botaoPlay2.alpha = 0.4;
 			trocar1.buttonMode = true;
 			trocar2.buttonMode = true;
 			trocar1.mouseEnabled = false;
@@ -158,6 +157,10 @@
 			textField[slider2B] = textField2B;
 			cultura[semente1] = [caule1, raiz1];
 			cultura[semente2] = [caule2, raiz2];
+			explante1[semente1] = [explante1Bolinha, explante1Morrendo];
+			explante1[semente2] = [explante2Bolinha, explante2Morrendo];
+			explante2[semente1] = [explante1Bolinha, explante1Morrendo];
+			explante2[semente2] = [explante2Bolinha, explante2Morrendo];
 			vidro[trocar1] = cultura1;
 			vidro[trocar2] = cultura2;
 			semente[caule1] = semente1;
@@ -180,6 +183,10 @@
 			addChild(ttreset);
 			var ttcc:ToolTip = new ToolTip(menu.creditosBtn, "Créditos", 11, 0.8, 200, 0.6, 0.1);
 			addChild(ttcc);
+			var ttt1:ToolTip = new ToolTip(trocar1, "Trocar recipiente", 11, 0.8, 200, 0.6, 0.1);
+			addChild(ttt1);
+			var ttt2:ToolTip = new ToolTip(trocar2, "Trocar recipiente", 11, 0.8, 200, 0.6, 0.1);
+			addChild(ttt2);
 			
 			//feedbackCerto.botaoOK.buttonMode = true;
 			//feedbackErrado.botaoOK.buttonMode = true;
@@ -191,38 +198,37 @@
 			semente1B = Math.random();
 			semente2A = Math.random();
 			semente2B = Math.random();
+			
+			iniciaTutorial();
 		}
 		
 		private function resetCultura(e:MouseEvent):void 
 		{
+			if (vidro[e.target].name == "cultura1") {
+				xTarget = -200;
+				qualExplante = explanteUm;
+				tweenExplante = new Tween(explanteUm, "x", None.easeNone, explanteUm.x, xTarget, 0.4, true);
+			} else if (vidro[e.target].name == "cultura2") {
+				xTarget = 900;
+				qualExplante = explanteDois;
+				tweenExplante = new Tween(explanteDois, "x", None.easeNone, explanteDois.x, xTarget, 0.4, true);
+			}
+			
+			if (!stage.contains(qualExplante)) {
+				qualPlanta[0] = planta[botao[e.target]][0];
+				qualPlanta[1] = planta[botao[e.target]][1];
+				tweenPlanta1 = new Tween(qualPlanta[0], "x", None.easeNone, qualPlanta[0].x, xTarget, 0.4, true);
+				tweenPlanta2 = new Tween(qualPlanta[1], "x", None.easeNone, qualPlanta[1].x, xTarget, 0.4, true);
+			}
+			
 			e.target.mouseEnabled = false;
 			e.target.alpha = 0.4;
-			//planta[botao[e.target]][0].gotoAndStop(1);
-			//planta[botao[e.target]][1].gotoAndStop(1);
-			qualPlanta[0] = planta[botao[e.target]][0];
-			qualPlanta[1] = planta[botao[e.target]][1];
-			//semente[planta[botaoPlay[e.target]][1]].visible = true;
 			vidro[e.target].enabled = true;
 			lastX = vidro[e.target].x;
 			qualCultura = vidro[e.target];
-			if (vidro[e.target].name == "cultura1") xTarget = -200;
-			else if (vidro[e.target].name == "cultura2") xTarget = 900;
 			tweenCultura = new Tween(vidro[e.target], "x", None.easeNone, vidro[e.target].x, xTarget, 0.4, true);
-			tweenPlanta1 = new Tween(qualPlanta[0], "x", None.easeNone, qualPlanta[0].x, xTarget, 0.4, true);
-			tweenPlanta2 = new Tween(qualPlanta[1], "x", None.easeNone, qualPlanta[1].x, xTarget, 0.4, true);
 			tweenCultura.addEventListener(TweenEvent.MOTION_FINISH, initTweenCultura);
-			//botao[e.target].mouseEnabled = false;
-			//botao[e.target].alpha = 0.4;
-/*			slider[e.target][0].value = 0;
-			slider[e.target][1].value = 0;
-			textField[slider[e.target][0]].text = "0";
-			textField[slider[e.target][1]].text = "0";
 			
-			semente1A = Math.random();
-			semente1B = Math.random();
-			semente2A = Math.random();
-			semente2B = Math.random();
-*/			
 			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		
@@ -230,15 +236,16 @@
 		{
 			tweenCultura.removeEventListener(TweenEvent.MOTION_FINISH, initTweenCultura);
 			tweenCultura = new Tween(qualCultura, "x", None.easeNone, xTarget, lastX, 0.4, true);
-			removeChild(qualPlanta[0]);
-			removeChild(qualPlanta[1]);
+			if (qualPlanta[0] != null && stage.contains(qualPlanta[0])) removeChild(qualPlanta[0]);
+			if (qualPlanta[1] != null && stage.contains(qualPlanta[1])) removeChild(qualPlanta[1]);
+			if (stage.contains(qualExplante)) removeChild(qualExplante);
 		}
 		
 		private function initTweenCulturaReset(e:TweenEvent):void 
 		{
 			tweenCultura.removeEventListener(TweenEvent.MOTION_FINISH, initTweenCulturaReset);
-			tweenCultura = new Tween(cultura1, "x", None.easeNone, -200, 171, 0.4, true);
-			tweenCultura = new Tween(cultura2, "x", None.easeNone, 900, 529, 0.4, true);
+			if (stage.contains(raizUm) || stage.contains(explanteUm)) tweenCultura = new Tween(cultura1, "x", None.easeNone, -200, 171, 0.4, true);
+			if (stage.contains(raizDois) || stage.contains(explanteDois)) tweenCultura = new Tween(cultura2, "x", None.easeNone, 900, 529, 0.4, true);
 			raiz1.gotoAndStop(1);
 			raiz2.gotoAndStop(1);
 			caule1.gotoAndStop(1);
@@ -247,6 +254,8 @@
 			if (stage.contains(cauleUm)) removeChild(cauleUm);
 			if (stage.contains(raizDois)) removeChild(raizDois);
 			if (stage.contains(cauleDois)) removeChild(cauleDois);
+			if (stage.contains(explanteUm)) removeChild(explanteUm);
+			if (stage.contains(explanteDois)) removeChild(explanteDois);
 		}
 		
 		private function changeSlider(e:Event):void 
@@ -264,10 +273,6 @@
 			semente2.visible = true;
 			cultura1.enabled = true;
 			cultura2.enabled = true;
-			//botaoPlay1.mouseEnabled = false;
-			//botaoPlay2.mouseEnabled = false;
-			//botaoPlay1.alpha = 0.4;
-			//botaoPlay2.alpha = 0.4;
 			slider1A.value = 0;
 			slider1B.value = 0;
 			slider2A.value = 0;
@@ -282,13 +287,15 @@
 			semente2A = Math.random();
 			semente2B = Math.random();
 			
-			tweenCultura = new Tween(cultura1, "x", None.easeNone, cultura1.x, -200, 0.4, true);
-			tweenCultura = new Tween(cultura2, "x", None.easeNone, cultura2.x, 900, 0.4, true);
-			tweenPlanta1 = new Tween(raizUm, "x", None.easeNone, raizUm.x, -200, 0.4, true);
-			tweenPlanta2 = new Tween(cauleUm, "x", None.easeNone, cauleUm.x, -200, 0.4, true);
-			tweenPlanta1 = new Tween(raizDois, "x", None.easeNone, raizDois.x, 900, 0.4, true);
-			tweenPlanta2 = new Tween(cauleDois, "x", None.easeNone, cauleDois.x, 900, 0.4, true);
-			tweenCultura.addEventListener(TweenEvent.MOTION_FINISH, initTweenCulturaReset);
+			if (stage.contains(raizUm) || stage.contains(explanteUm)) tweenCultura = new Tween(cultura1, "x", None.easeNone, cultura1.x, -200, 0.4, true);
+			if (stage.contains(raizDois) || stage.contains(explanteDois)) tweenCultura = new Tween(cultura2, "x", None.easeNone, cultura2.x, 900, 0.4, true);
+			if (stage.contains(raizUm)) tweenPlanta1 = new Tween(raizUm, "x", None.easeNone, raizUm.x, -200, 0.4, true);
+			if (stage.contains(raizUm)) tweenPlanta2 = new Tween(cauleUm, "x", None.easeNone, cauleUm.x, -200, 0.4, true);
+			if (stage.contains(raizDois)) tweenPlanta1 = new Tween(raizDois, "x", None.easeNone, raizDois.x, 900, 0.4, true);
+			if (stage.contains(raizDois)) tweenPlanta2 = new Tween(cauleDois, "x", None.easeNone, cauleDois.x, 900, 0.4, true);
+			if (stage.contains(explanteUm)) tweenExplante = new Tween(explanteUm, "x", None.easeNone, explanteUm.x, -200, 0.4, true);
+			if (stage.contains(explanteDois)) tweenExplante = new Tween(explanteDois, "x", None.easeNone, explanteDois.x, 900, 0.4, true);
+			if (stage.contains(raizUm) || stage.contains(raizDois) || stage.contains(explanteUm) || stage.contains(explanteDois)) tweenCultura.addEventListener(TweenEvent.MOTION_FINISH, initTweenCulturaReset);
 			
 			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
@@ -348,12 +355,8 @@
 		
 		private function f(x:Number, x0:Number, n:int):int
 		{
-			//if (x <= 0.2) movieclip = explanteMorrendo;
-			//else if (x >= 0.8) movieclip = explanteBolinha;
-			//else movieclip = planta;
-			
-			if (x >= 0 && x0 >= x) return Math.round(n * (x / x0));
-			else if (x > x0 && x <= 1) return Math.round(n * ((1 - x) / (1 - x0)));
+			if (x >= 0.2 && x0 >= x) return Math.round(n * ((x - 0.2) / (x0 - 0.2)));
+			else if (x > x0 && x <= 0.8) return Math.round(n * ((x - 0.8) / (x0 - 0.8)));
 			
 			return 0;
 		}
@@ -372,7 +375,6 @@
 		function drop(e:MouseEvent) :void {
 			if (alvo == null) alvo = new MovieClip();
 			dragging.alpha = 1;
-			dragging.gotoAndStop(1);
 			stage.removeEventListener(MouseEvent.MOUSE_UP, drop);
 			removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			dragging.stopDrag();
@@ -380,33 +382,55 @@
 			alvo.enabled = false;
 			
 			if (alvo.name == "cultura1") {
-				cauleUm = new (getDefinitionByName(getQualifiedClassName(cultura[dragging][0])));
-				raizUm = new (getDefinitionByName(getQualifiedClassName(cultura[dragging][1])));
-				addChild(cauleUm);
-				addChild(raizUm);
-				cauleUm.x = raizUm.x = alvo.x;
-				cauleUm.y = raizUm.y = alvo.y;
-				//botaoPlay1.mouseEnabled = true;
-				//botaoPlay1.alpha = 1;
+				if (slider1A.value <= 0.2 || slider1B.value <= 0.2) {
+					explanteUm = new (getDefinitionByName(getQualifiedClassName(explante1[dragging][1])));
+					addChild(explanteUm);
+					explanteUm.x = alvo.x;
+					explanteUm.y = alvo.y;
+				} else if (slider1A.value >= 0.8 || slider1B.value >= 0.8) {
+					explanteUm = new (getDefinitionByName(getQualifiedClassName(explante1[dragging][0])));
+					addChild(explanteUm);
+					explanteUm.x = alvo.x;
+					explanteUm.y = alvo.y;
+				} else {
+					cauleUm = new (getDefinitionByName(getQualifiedClassName(cultura[dragging][0])));
+					raizUm = new (getDefinitionByName(getQualifiedClassName(cultura[dragging][1])));
+					addChild(cauleUm);
+					addChild(raizUm);
+					cauleUm.x = raizUm.x = alvo.x;
+					cauleUm.y = raizUm.y = alvo.y;
+					planta[cultura1] = [raizUm, cauleUm];
+					playAnimation(alvo);
+				}
+				
 				trocar1.mouseEnabled = true;
 				trocar1.alpha = 1;
-				planta[cultura1] = [raizUm, cauleUm];
-				playAnimation(alvo);
 			}
 			
 			if (alvo.name == "cultura2") {
-				cauleDois = new (getDefinitionByName(getQualifiedClassName(cultura[dragging][0])));
-				raizDois = new (getDefinitionByName(getQualifiedClassName(cultura[dragging][1])));
-				addChild(cauleDois);
-				addChild(raizDois);
-				cauleDois.x = raizDois.x = alvo.x;
-				cauleDois.y = raizDois.y = alvo.y;
-				//botaoPlay2.mouseEnabled = true;
-				//botaoPlay2.alpha = 1;
+				if (slider2A.value <= 0.2 || slider2B.value <= 0.2) {
+					explanteDois = new (getDefinitionByName(getQualifiedClassName(explante2[dragging][1])));
+					addChild(explanteDois);
+					explanteDois.x = alvo.x;
+					explanteDois.y = alvo.y;
+				} else if (slider2A.value >= 0.8 || slider2B.value >= 0.8) {
+					explanteDois = new (getDefinitionByName(getQualifiedClassName(explante2[dragging][0])));
+					addChild(explanteDois);
+					explanteDois.x = alvo.x;
+					explanteDois.y = alvo.y;
+				} else {
+					cauleDois = new (getDefinitionByName(getQualifiedClassName(cultura[dragging][0])));
+					raizDois = new (getDefinitionByName(getQualifiedClassName(cultura[dragging][1])));
+					addChild(cauleDois);
+					addChild(raizDois);
+					cauleDois.x = raizDois.x = alvo.x;
+					cauleDois.y = raizDois.y = alvo.y;
+					planta[cultura2] = [raizDois, cauleDois];
+					playAnimation(alvo);
+				}
+				
 				trocar2.mouseEnabled = true;
 				trocar2.alpha = 1;
-				planta[cultura2] = [raizDois, cauleDois];
-				playAnimation(alvo);
 			}
 			
 			//planta[botaoPlay1] = [raizUm, cauleUm];
@@ -458,6 +482,57 @@
 			}
 		}
 
+		
+//Tutorial
+		private var posQuadradoArraste:Point = new Point();
+		private var balao:CaixaTexto;
+		private var pointsTuto:Array;
+		private var tutoBaloonPos:Array;
+		private var tutoPos:int;
+		private var tutoSequence:Array = ["Ajuste a concentração de auxina e cinetina no recipiente acima (unidades arbitrárias).",
+										  "Arraste um explante desta planta para um dos recipientes acima.",
+										  "Pressione para trocar por um recipiente vazio."];
+		/**
+		 * Inicia o tutorial da atividade.
+		 */								  
+		private function iniciaTutorial(e:MouseEvent = null):void 
+		{
+			tutoPos = 0;
+			if(balao == null){
+				balao = new CaixaTexto(true);
+				addChild(balao);
+				setChildIndex(balao, numChildren - 1);
+				balao.visible = false;
+				
+				pointsTuto = 	[new Point(155, 340),
+								new Point(200, 460),
+								new Point(50, 92)];
+								
+				tutoBaloonPos = [[CaixaTexto.BOTTON, CaixaTexto.CENTER],
+								[CaixaTexto.LEFT, CaixaTexto.CENTER],
+								[CaixaTexto.LEFT, CaixaTexto.CENTER]];
+			}
+			
+			balao.removeEventListener(Event.CLOSE, closeBalao);
+			balao.setText(tutoSequence[tutoPos], tutoBaloonPos[tutoPos][0], tutoBaloonPos[tutoPos][1]);
+			balao.setPosition(pointsTuto[tutoPos].x, pointsTuto[tutoPos].y);
+			balao.addEventListener(Event.CLOSE, closeBalao);
+			balao.visible = true;
+			setChildIndex(balao, numChildren - 1);
+		}
+		
+		private function closeBalao(e:Event):void 
+		{
+			tutoPos++;
+			if (tutoPos >= tutoSequence.length) {
+				balao.removeEventListener(Event.CLOSE, closeBalao);
+				balao.visible = false;
+				
+			}else {
+				balao.setText(tutoSequence[tutoPos], tutoBaloonPos[tutoPos][0], tutoBaloonPos[tutoPos][1]);
+				balao.setPosition(pointsTuto[tutoPos].x, pointsTuto[tutoPos].y);
+			}
+		}
 		
 		/*------------------------------------------------------------------------------------------------*/
 		//SCORM:
